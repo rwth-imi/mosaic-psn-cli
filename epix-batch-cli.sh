@@ -5,7 +5,7 @@ EPIX_SERVICE="https://demo.ths-greifswald.de/epix/epixService"
 
 TEMP=`getopt -o hAUDd:b:c: --long help,add,update,remove,domain:,basedir:,ssl,nossl,nowildcardssl,acme-domain:,ssl-reload-cmd:,php,nophp,php-version:,nginx,nonginx,www,acme-sh: -n "${FUNCNAME}" -- "${@}"`
 
-if [ $? != 0 ] ; then return 1 ; fi
+if [ $? != 0 ] ; then exit 1 ; fi
 
 eval set -- "${TEMP}";
 
@@ -13,7 +13,11 @@ while [[ ${1:0:1} = - ]]; do
 	case $1 in
 		-h|--help)
 			cat <<EOF
-USAGE: ${FUNCNAME} [OPTIONS] DOMAIN
+epix-batch-cli.sh reads input from STDIN, sends it in batches to E-PIX service
+and returns Master-Patient-Indices (MPIs) ordered accordingly.
+
+USAGE: $(basename "$BASH_SOURCE") [OPTIONS] < input.csv
+USAGE: cat input.csv | $(basename "$BASH_SOURCE") [OPTIONS]
 
 OPTIONS
 
@@ -23,7 +27,7 @@ OPTIONS
   -s --epix-service	Set E-PIX service URL (default: ${EPIX_SERVICE})
 
 EOF
-        								shift 1; return ;;
+        								shift 1; exit ;;
 		--)							shift 1; break ;;
 		-d|--delimiter)		local SEP="$2";			shift 2; continue ;;
 		-b|--batch)		local BATCHSIZE="$2";		shift 2; continue ;;
@@ -31,7 +35,7 @@ EOF
 	esac
 
 	echo "ERROR: Unknown parameter ${1}"
-	break;
+	exit;
 done
 
 function send_request() {
