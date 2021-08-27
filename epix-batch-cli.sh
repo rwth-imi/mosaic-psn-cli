@@ -3,7 +3,7 @@ SEP=","
 BATCHSIZE=10
 EPIX_SERVICE="https://demo.ths-greifswald.de/epix/epixService"
 
-TEMP=`getopt -o hAUDd:b:c: --long help,add,update,remove,domain:,basedir:,ssl,nossl,nowildcardssl,acme-domain:,ssl-reload-cmd:,php,nophp,php-version:,nginx,nonginx,www,acme-sh: -n "${FUNCNAME}" -- "${@}"`
+TEMP=`getopt -o hd:b:s: --long help,delimiter:,batch:,epix-service: -n "$(basename "$BASH_SOURCE")" -- "${@}"`
 
 if [ $? != 0 ] ; then exit 1 ; fi
 
