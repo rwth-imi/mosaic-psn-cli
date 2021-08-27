@@ -13,7 +13,7 @@ while [[ ${1:0:1} = - ]]; do
 	case $1 in
 		-h|--help)
 			cat <<EOF
-epix-batch-cli.sh reads input from STDIN, sends it in batches to E-PIX service
+$(basename "$BASH_SOURCE") reads input from STDIN, sends it in batches to E-PIX service
 and returns Master-Patient-Indices (MPIs) ordered accordingly.
 
 USAGE: $(basename "$BASH_SOURCE") [OPTIONS] < input.csv
