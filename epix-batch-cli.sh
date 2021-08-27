@@ -45,7 +45,7 @@ function send_request() {
 	REQF='<sourceName>dummy_safe_source</sourceName></mpiRequest></ser:requestMPIBatch></soapenv:Body></soapenv:Envelope>'
 	ORDER="$(echo "$DATA" | awk -F"$SEP" '{print $0 FS NR}' | sort -t"$SEP" | rev | cut -d"$SEP" -f1 | rev)"
 	COUNT="$(echo "$DATA" | awk -F"$SEP" '{d[$0]++} END{for(l in d){print l FS d[l]}}' | sort -t"$SEP" | rev | cut -d"$SEP" -f1 | rev)"
-	echo "$(curl --silent -X POST -H "Content-Type: text/xml" --data-binary "$REQH$REQE$REQF" "$EPIX_SERVICE" | xsltproc <(echo "$XSLT") - | sort -t"$SEP" | paste -d"$SEP" <(echo "$COUNT") - | awk -F',' '{for(i=1;i<=$1;i++){print}}' | cut -d"$SEP" -f1 --complement | paste -d"$SEP" <(echo "$ORDER") - | sort -t"$SEP" | cut -d"$SEP" -f1 --complement | rev | cut -d"$SEP" -f1 | rev)"
+	echo "$(curl --silent -X POST -H "Content-Type: text/xml" --data-binary "$REQH$REQE$REQF" "$EPIX_SERVICE" | xsltproc <(echo "$XSLT") - | sort -t"$SEP" | paste -d"$SEP" <(echo "$COUNT") - | awk -F',' '{for(i=1;i<=$1;i++){print}}' | cut -d"$SEP" -f1 --complement | paste -d"$SEP" <(echo "$ORDER") - | sort -nt"$SEP" | cut -d"$SEP" -f1 --complement | rev | cut -d"$SEP" -f1 | rev)"
 }
 
 i=0
