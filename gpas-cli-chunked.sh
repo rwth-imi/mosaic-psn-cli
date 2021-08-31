@@ -1,10 +1,10 @@
 #!/bin/bash
 SEP=","
-BATCHSIZE=10
+CHUNKSIZE=10
 GPAS_SERVICE="https://demo.ths-greifswald.de/gpas/gpasService"
 DOMAIN="Studie A"
 
-TEMP=`getopt -o hd:b:s:n: --long help,delimiter:,batch:,gpas-service:,domain: -n "$(basename "$BASH_SOURCE")" -- "${@}"`
+TEMP=`getopt -o hd:c:s:n: --long help,delimiter:,chunk:,gpas-service:,domain: -n "$(basename "$BASH_SOURCE")" -- "${@}"`
 
 if [ $? != 0 ] ; then exit 1 ; fi
 
@@ -24,7 +24,7 @@ OPTIONS
 
   -h --help		Print this help
   -d --delimiter	Set field delimiter (default: ${SEP})
-  -b --batch		Request Master-Patient-Index in batches of # datasets (default: ${BATCHSIZE})
+  -c --chunk		Request Master-Patient-Index in chunks of # datasets (default: ${CHUNKSIZE})
   -s --gpas-service	Set gPAS service URL (default: ${GPAS_SERVICE})
   -n --domain		Set gPAS domain (default: ${DOMAIN})
 
@@ -32,7 +32,7 @@ EOF
         							shift 1; exit ;;
 		--)						shift 1; break ;;
 		-d|--delimiter)		SEP="$2";		shift 2; continue ;;
-		-b|--batch)		BATCHSIZE="$2";		shift 2; continue ;;
+		-c|--chunk)		CHUNKSIZE="$2";		shift 2; continue ;;
 		-s|--gpas-service)	GPAS_SERVICE="$2";	shift 2; continue ;;
 		-n|--domain)		DOMAIN="$2";		shift 2; continue ;;
 	esac
@@ -60,7 +60,7 @@ awk -F"$SEP" '{ printf "<values>%s</values>%c",$0,FS; print }' | {
 while IFS= read line; do
 	REQE+="$(echo "$line" | cut -d"$SEP" -f1 )"
 	DATA+="$(echo "$line" | cut -d"$SEP" -f1 --complement )"$'\n'
-	if [ $((++i)) -ge $BATCHSIZE ]; then
+	if [ $((++i)) -ge $CHUNKSIZE ]; then
 		send_request "$REQE" "$DATA"
 		i=0; REQE=""; DATA=""
 	fi

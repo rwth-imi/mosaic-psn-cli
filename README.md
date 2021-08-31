@@ -18,7 +18,7 @@ OPTIONS
 
   -h --help		Print this help
   -d --delimiter	Set field delimiter (default: ,)
-  -b --batch		Request Master-Patient-Index in batches of # datasets (default: 10)
+  -c --chunk		Request Master-Patient-Index in chunks of # datasets (default: 10)
   -s --epix-service	Set E-PIX service URL (default: https://demo.ths-greifswald.de/epix/epixService)
   -n --domain		Set E-PIX domain (default: Demo)
   -e --source		Set E-PIX source (default: dummy_safe_source)
@@ -36,7 +36,7 @@ OPTIONS
 
   -h --help		Print this help
   -d --delimiter	Set field delimiter (default: ,)
-  -b --batch		Request Master-Patient-Index in batches of # datasets (default: 10)
+  -c --chunk		Request Master-Patient-Index in chunks of # datasets (default: 10)
   -s --gpas-service	Set gPAS service URL (default: https://demo.ths-greifswald.de/gpas/gpasService)
   -n --domain		Set gPAS domain (default: Studie A)
 ```

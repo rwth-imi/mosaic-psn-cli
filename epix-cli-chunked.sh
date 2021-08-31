@@ -1,11 +1,11 @@
 #!/bin/bash
 SEP=","
-BATCHSIZE=10
+CHUNKSIZE=10
 EPIX_SERVICE="https://demo.ths-greifswald.de/epix/epixService"
 DOMAIN="Demo"
 SOURCE="dummy_safe_source"
 
-TEMP=`getopt -o hd:b:s:n:e: --long help,delimiter:,batch:,epix-service:,domain:,source: -n "$(basename "$BASH_SOURCE")" -- "${@}"`
+TEMP=`getopt -o hd:c:s:n:e: --long help,delimiter:,chunk:,epix-service:,domain:,source: -n "$(basename "$BASH_SOURCE")" -- "${@}"`
 
 if [ $? != 0 ] ; then exit 1 ; fi
 
@@ -25,7 +25,7 @@ OPTIONS
 
   -h --help		Print this help
   -d --delimiter	Set field delimiter (default: ${SEP})
-  -b --batch		Request Master-Patient-Index in batches of # datasets (default: ${BATCHSIZE})
+  -c --chunk		Request Master-Patient-Index in chunks of # datasets (default: ${CHUNKSIZE})
   -s --epix-service	Set E-PIX service URL (default: ${EPIX_SERVICE})
   -n --domain		Set E-PIX domain (default: ${DOMAIN})
   -e --source		Set E-PIX source (default: ${SOURCE})
@@ -34,7 +34,7 @@ EOF
         							shift 1; exit ;;
 		--)						shift 1; break ;;
 		-d|--delimiter)		SEP="$2";		shift 2; continue ;;
-		-b|--batch)		BATCHSIZE="$2";		shift 2; continue ;;
+		-c|--chunk)		CHUNKSIZE="$2";		shift 2; continue ;;
 		-s|--epix-service)	EPIX_SERVICE="$2";	shift 2; continue ;;
 		-n|--domain)		DOMAIN="$2";		shift 2; continue ;;
 		-e|--source)		SOURCE="$2";		shift 2; continue ;;
@@ -64,7 +64,7 @@ XSLT="$(echo "$HEAD" | awk -F"$SEP" '{ printf "<xsl:transform xmlns:xsl=\"http:/
 while IFS= read line; do
 	REQE+="$(echo "$line" | cut -d"$SEP" -f1 )"
 	DATA+="$(echo "$line" | cut -d"$SEP" -f1 --complement )"$'\n'
-	if [ $((++i)) -ge $BATCHSIZE ]; then
+	if [ $((++i)) -ge $CHUNKSIZE ]; then
 		send_request "$REQE" "$DATA"
 		i=0; REQE=""; DATA=""
 	fi
